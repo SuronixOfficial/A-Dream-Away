@@ -11,13 +11,17 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private SpriteRenderer _spriteRenderer;
+    private CharacterController _controller;
 
-    private Vector2 _moveDirection;
+    private Vector2 _moveInput;
+    private Vector3 _velocity;
+    private const float GRAVITY = 9.81f;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _controller = GetComponent<CharacterController>();
     }
 
     private void Start()
@@ -42,47 +46,40 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnMove(Vector2 moveDirection)
+    private void OnMove(Vector2 moveInput)
     {
-        _moveDirection = moveDirection;
-    }
-    private void FixedUpdate()
-    {
-        Move();
-    }
-    private void Move()
-    {
-        _rigidbody.linearVelocity = _moveDirection * _speed * Time.fixedDeltaTime;
+        _moveInput = moveInput;
     }
     private void Update()
     {
-        SetHeight();
+        Move();
         SetSprite();
     }
 
-    private void SetHeight()
+    private void Move()
     {
-        RaycastHit hit;
-        Vector3 origin = transform.position + Vector3.up;
-
-        if (Physics.Raycast(origin, -transform.up, out hit, Mathf.Infinity, _groundLayer))
+        if (!_controller.isGrounded)
         {
-            if (hit.collider == null) return;
-
-            transform.position = new Vector3(transform.position.x,
-                hit.point.y + _groundDistance,
-                transform.position.z);
+            _velocity.y = -GRAVITY;
         }
+        else
+        {
+            _velocity.y = -0.1f;
+        }
+
+        Vector3 moveDirection = new Vector3(_moveInput.x * _speed, _velocity.y, 0) * Time.deltaTime;
+        _controller.Move(moveDirection);
     }
+ 
     private void SetSprite()
     {
-        if (_moveDirection.x != 0 &&
-            _moveDirection.x < 0)
+        if (_moveInput.x != 0 &&
+            _moveInput.x < 0)
         {
             _spriteRenderer.flipX = true;
         }
-        else if (_moveDirection.x != 0 &&
-            _moveDirection.x > 0)
+        else if (_moveInput.x != 0 &&
+            _moveInput.x > 0)
         {
             _spriteRenderer.flipX = false;
         }
