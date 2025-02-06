@@ -5,11 +5,7 @@ using System.Collections.Generic;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed = 3;
-    [SerializeField] private float _groundDistance;
 
-    [SerializeField] private LayerMask _groundLayer;
-
-    private Rigidbody _rigidbody;
     private SpriteRenderer _spriteRenderer;
     private CharacterController _controller;
 
@@ -19,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _controller = GetComponent<CharacterController>();
     }
@@ -67,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
             _velocity.y = -0.1f;
         }
 
-        Vector3 moveDirection = new Vector3(_moveInput.x * _speed, _velocity.y, 0) * Time.deltaTime;
+        Vector3 moveDirection = new Vector3(_moveInput.x * _speed, _velocity.y, _moveInput.y * _speed) * Time.deltaTime;
         _controller.Move(moveDirection);
     }
  
