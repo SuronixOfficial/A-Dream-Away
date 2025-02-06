@@ -21,7 +21,7 @@ MonoBehaviour:
     m_Value: 1
   focusDistance:
     m_OverrideState: 1
-    m_Value: 5.01
+    m_Value: 5
   focusDistanceMode:
     m_OverrideState: 1
     m_Value: 0
@@ -204,7 +204,7 @@ MonoBehaviour:
     m_Value: 0.7
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.9716981, g: 0.93776995, b: 0.79294235, a: 1}
+    m_Value: {r: 0.7609469, g: 0.8409508, b: 0.9433962, a: 1}
   dirtTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -244,7 +244,7 @@ MonoBehaviour:
     m_Value: 73
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.9963267, b: 0.9858491, a: 1}
+    m_Value: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
   hueShift:
     m_OverrideState: 1
     m_Value: 0
