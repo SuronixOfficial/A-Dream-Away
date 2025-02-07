@@ -82,23 +82,20 @@ public class InputReader : PersistentSingleton<InputReader>
         _playerInput.SwitchCurrentActionMap("UI");
     }
 
-    public event Action ResumeEvent;
-    public void OnResume(InputAction.CallbackContext context)
+    public event Action SprintEvent;
+    public event Action SprintCancelledEvent;
+    public void OnSprint(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            ResumeEvent?.Invoke();
+            SprintEvent?.Invoke();
+        }  
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            SprintCancelledEvent?.Invoke();
         }
     }
 
-    public event Action PauseEvent;
-    public void OnPause(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            PauseEvent?.Invoke();
-        }
-    }
 
     public event Action<Vector2> MoveEvent;
     public void OnMove(InputAction.CallbackContext context)

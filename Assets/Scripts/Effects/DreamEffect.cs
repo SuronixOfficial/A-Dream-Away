@@ -6,24 +6,39 @@ using UnityEngine.Video;
 public class DreamEffect : Singleton<DreamEffect>
 {
     [SerializeField] private VideoPlayer _videoPlayer;
+    [SerializeField] private AnimationClip _dreamEffectFadeInAnimationClip;
     [SerializeField] private Animator _dreamEffectAnim;
     [SerializeField] private float _exitTimeBeforeVideoEnds = 0.1f;
 
-    public void EnterEffect(VideoClip dreamClip)
+    public void EnterEffect(VideoClip dreamClip,string playerDialogue)
     {
+        TypewriterEffect.Instance.WriteText(playerDialogue);
         InputReader.Instance.SetDisablePlayerInput(true);
 
-        _videoPlayer.clip = dreamClip;
-        _dreamEffectAnim.SetTrigger("FadeIn");
+        TypewriterEffect.Instance.OnEffectFinished += StartTransition;
 
-        StartCoroutine(ExitEffect(dreamClip.length));
+        _videoPlayer.clip = dreamClip;
     }
 
-    private IEnumerator ExitEffect(double videoLength)
+    private void StartTransition()
     {
-        yield return new WaitForSeconds((float)videoLength - _exitTimeBeforeVideoEnds);
+        _dreamEffectAnim.SetTrigger("FadeIn");
+
+        StartCoroutine(ExitEffect());
+
+        TypewriterEffect.Instance.OnEffectFinished -= StartTransition;
+    }
+    private IEnumerator ExitEffect()
+    {
+        yield return new WaitForSeconds(_dreamEffectFadeInAnimationClip.length + (float)_videoPlayer.clip.length - _exitTimeBeforeVideoEnds);
+        TypewriterEffect.Instance.ResetText();
 
         _dreamEffectAnim.SetTrigger("FadeOut");
         InputReader.Instance.SetDisablePlayerInput(false);
+    }
+
+    private void OnDestroy()
+    {
+        TypewriterEffect.Instance.OnEffectFinished -= StartTransition;
     }
 }

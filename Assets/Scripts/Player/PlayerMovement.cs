@@ -4,13 +4,17 @@ using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float _speed = 3;
+    [SerializeField] private float _walkSpeed = 3;
+    [SerializeField] private float _sprintSpeed = 5;
 
     private SpriteRenderer _spriteRenderer;
     private CharacterController _controller;
 
     private Vector2 _moveInput;
     private Vector3 _velocity;
+    private float _currentSpeed;
+    private bool _isSprinting;
+
     private const float GRAVITY = 9.81f;
 
     private void Awake()
@@ -34,10 +38,14 @@ public class PlayerMovement : MonoBehaviour
         if (status)
         {
             InputReader.Instance.MoveEvent += OnMove;
+            InputReader.Instance.SprintEvent += OnSprint;
+            InputReader.Instance.SprintCancelledEvent += OnCancelSprint;
         }
         else
         {
             InputReader.Instance.MoveEvent -= OnMove;
+            InputReader.Instance.SprintEvent -= OnSprint;
+            InputReader.Instance.SprintCancelledEvent -= OnCancelSprint;
         }
     }
 
@@ -45,6 +53,17 @@ public class PlayerMovement : MonoBehaviour
     {
         _moveInput = moveInput;
     }
+
+    private void OnSprint()
+    {
+        _isSprinting = true;
+    }
+
+    private void OnCancelSprint()
+    {
+        _isSprinting = false;
+    }
+
     private void Update()
     {
         Move();
@@ -62,7 +81,8 @@ public class PlayerMovement : MonoBehaviour
             _velocity.y = -0.1f;
         }
 
-        Vector3 moveDirection = new Vector3(_moveInput.x * _speed, _velocity.y, _moveInput.y * _speed) * Time.deltaTime;
+        _currentSpeed = _isSprinting ? _sprintSpeed : _walkSpeed;
+        Vector3 moveDirection = new Vector3(_moveInput.x * _currentSpeed, _velocity.y, _moveInput.y * _currentSpeed) * Time.deltaTime;
         _controller.Move(moveDirection);
     }
  
